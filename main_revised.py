@@ -7,7 +7,7 @@ import random
 # I used AI to clean this up a bit and fix some errors, I implemented most of the ideas myself, but AI helped with the code structure and some of the logic.
 # AI also added some error handling for file not found errors and empty files.
 # Copyright (C) 2025 Jordan Al-Fanek, all rights reserved.
-# Copyright TWT Pictures (C) Tech With Tim, all rights reserved.
+# Thank you to Tech with Tim for the pictures in the TWT Pictures subfolder in the assests folder
 # Copyright Homemade Pictures (C) 2025 Jordan Al-Fanek, all rights reserved.
 
 # Constants
