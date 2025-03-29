@@ -15,16 +15,16 @@ WIDTH = 500
 HEIGHT = 500
 LETTERS_PER_LINE = 13
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-WORDS_FILE = "words.txt"
-IMAGE_DIR = "C:/Users/jorda/Projects/Code/Python/Hangman/assets"
-ICON_PATH = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/logo.ico"
+WORDS_FILE = "words.txt" # Can use your own
+IMAGE_DIR = "YOUR IMAGE FOLDER"
+ICON_PATH = "YOUR LOGO PATH"
 MAX_WRONG_GUESSES = 6
 
-fancy_or_homemade = easygui.ynbox("Do you want to use a homemade or online found picture?", "Picture Choice", ("Online", "Homemade"))
+fancy_or_homemade = easygui.ynbox("Do you want to use a homemade or online found picture?", "Picture Choice", ("Online", "Homemade")) # You can remove from here until line 28
 if fancy_or_homemade:
-    IMAGE_DIR = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/TWT Pictures"
+    IMAGE_DIR = "YOUR ONLINE FOUND PICTURES"
 else:
-    IMAGE_DIR = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/Homemade Pictures"
+    IMAGE_DIR = "YOUR HOMEMADE PICTURES"
     
 def get_word_from_text_file(file_path):
     """Gets a random word from a text file."""
