@@ -3,11 +3,13 @@ import os
 from PIL import ImageTk, Image
 import easygui
 import random
+import roundedcornerclass as FrameClass
+
 
 # I used AI to clean this up a bit and fix some errors, I implemented most of the ideas myself, but AI helped with the code structure and some of the logic.
 # AI also added some error handling for file not found errors and empty files.
 # Copyright (C) 2025 Jordan Al-Fanek, all rights reserved.
-# Thank you to Tech with Tim for the pictures in the TWT Pictures subfolder in the assests folder
+# Thanks to @Tech With Tim Inc. for the online pictures in my assets folder
 # Copyright Homemade Pictures (C) 2025 Jordan Al-Fanek, all rights reserved.
 
 # Constants
@@ -15,16 +17,16 @@ WIDTH = 500
 HEIGHT = 500
 LETTERS_PER_LINE = 13
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-WORDS_FILE = "words.txt" # Can use your own
-IMAGE_DIR = "YOUR IMAGE FOLDER"
-ICON_PATH = "YOUR LOGO PATH"
+WORDS_FILE = "words.txt"
+IMAGE_DIR = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/"
+ICON_PATH = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/logo.ico"
 MAX_WRONG_GUESSES = 6
 
-fancy_or_homemade = easygui.ynbox("Do you want to use a homemade or online found picture?", "Picture Choice", ("Online", "Homemade")) # You can remove from here until line 28
+fancy_or_homemade = easygui.ynbox("Do you want to use a homemade or online found picture?", "Picture Choice", ("Online", "Homemade"))
 if fancy_or_homemade:
-    IMAGE_DIR = "YOUR ONLINE FOUND PICTURES"
+    IMAGE_DIR = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/TWT Pictures"
 else:
-    IMAGE_DIR = "YOUR HOMEMADE PICTURES"
+    IMAGE_DIR = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/Home-Made Pictures"
     
 def get_word_from_text_file(file_path):
     """Gets a random word from a text file."""
@@ -153,5 +155,9 @@ def setup_ui(root, word, word_class): #add root as parameter
 
 if __name__ == "__main__":
     root = HangmanGame()
-    print(help(setup_ui))  # Print the help message for the root window
+
+    settings_frame = FrameClass.CustomFrame(root, border_width=5, corner_radius=10, bg_color="white", width=WIDTH - 75, height=HEIGHT - 75)
+    frame_trigger = tk.Button(root, text="Settings", command=settings_frame.show_frame)
+    frame_trigger.place(x=WIDTH - 100, y=10) # Place the settings button
+    
     root.mainloop()
