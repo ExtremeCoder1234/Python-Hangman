@@ -16,3 +16,4 @@ A file named **logo.ico** for the icon
 
 
 ##### You can remove the script from line 23-28(the if fancy_or_homemade part of the script)
+Thanks to WikiMedia Commons for __close_menu.png__
