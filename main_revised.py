@@ -1,10 +1,9 @@
 import tkinter as tk
-import os
+import os, sys
 from PIL import ImageTk, Image
 import easygui
 import random
-import roundedcornerclass as FrameClass
-
+import neededClasses as ExtraClasses
 
 # I used AI to clean this up a bit and fix some errors, I implemented most of the ideas myself, but AI helped with the code structure and some of the logic.
 # AI also added some error handling for file not found errors and empty files.
@@ -18,15 +17,12 @@ HEIGHT = 500
 LETTERS_PER_LINE = 13
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 WORDS_FILE = "words.txt"
-IMAGE_DIR = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/"
-ICON_PATH = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/logo.ico"
+IMAGE_DIR = "C:\\Users\\jorda\\Projects\\Code\\Python\\Hangman\\assets\\Home-Made Pictures"
+ICON_PATH = "C:\\Users\\jorda\\Projects\\Code\\Python\\Hangman\\assets\\logo.ico"
+ASSETS_FOLDER = "C:\\Users\\jorda\\Projects\\Code\\Python\\Hangman\\assets"
 MAX_WRONG_GUESSES = 6
 
-fancy_or_homemade = easygui.ynbox("Do you want to use a homemade or online found picture?", "Picture Choice", ("Online", "Homemade"))
-if fancy_or_homemade:
-    IMAGE_DIR = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/TWT Pictures"
-else:
-    IMAGE_DIR = "C:/Users/jorda/Projects/Code/Python/Hangman/assets/Home-Made Pictures"
+
     
 def get_word_from_text_file(file_path):
     """Gets a random word from a text file."""
@@ -43,7 +39,7 @@ def get_word_from_text_file(file_path):
 def get_word_from_user():
     """Gets a word from the user via a dialog."""
     word = tk.simpledialog.askstring("Word", "Please enter a word for the player to guess").upper().strip()
-    if not word or any(char in word for char in "!.\"?'@;"):
+    if not word or any(char in word for char in "!.\"'@;[#$%^&*()_+={}[]|\\:<>?,/`~"):
         tk.messagebox.showwarning("Invalid input. Please enter a valid word.", "Input Error")
         exit()
     return word
@@ -131,9 +127,18 @@ class HangmanGame(tk.Tk):
         self.resizable(False, False)
         self.configure(bg="white")
         self.iconbitmap(ICON_PATH)
+        
+        
+        
+    def interface_setup(self):
+        """Sets up the interface."""
         self.word_to_guess = WordToGuess(self, get_player_count())
+        setup_ui(self, self.word_to_guess.word, self.word_to_guess)
         update_image(self, 0)
-        setup_ui(self, self.word_to_guess.word, self.word_to_guess) #pass self
+
+
+# UI setup functions 
+
 
 def update_image(root, guess_count):
     """Updates the hangman image."""
@@ -145,8 +150,45 @@ def update_image(root, guess_count):
         image_label.image = root_image
         image_label.place(x=0, y=0)
     except FileNotFoundError:
-        tk.messagebox.showwarning(f"Error: Hangman image 'hangman{guess_count}.png' not found.", "Image Error")
+        tk.messagebox.showwarning(message=f"Error: Hangman image 'hangman{guess_count}.png' not found.", title="Image Error")
         exit()
+
+def setup_settings_menu(frame: ExtraClasses.CustomFrame):
+    try:
+        image_path = os.path.join(ASSETS_FOLDER, "close_menu.png")
+        load_image = Image.open(image_path)
+        print(load_image.mode) # Check the image mode
+        color_image = load_image.convert("RGBA")
+        resized_image = color_image.resize((50,50), Image.Resampling.LANCZOS)
+        compatible_image = ImageTk.PhotoImage(resized_image)
+        close_button = tk.Label(frame, image=compatible_image)
+        close_button.place(relx=0.5, rely=0.5)
+    except FileNotFoundError:
+        tk.messagebox.showerror("Image Error", f"Error: Image file '{image_path}' not found.")
+    except Exception as e:
+        tk.messagebox.showerror("Image Error", f"Error: {e}")
+
+
+   
+def handle_secondary_window_result(dialog, result):
+    global IMAGE_DIR
+    should_continue = True
+    if result:
+        if result == "Online":
+            IMAGE_DIR = os.path.join(ASSETS_FOLDER, "TWT Pictures")
+        elif result == "Homemade":
+            IMAGE_DIR = os.path.join(ASSETS_FOLDER, "Home-Made Pictures")
+        else:
+            tk.messagebox.showerror("Error", "Pick a better choice next time, don't just click Esc or close the window.")
+            dialog.parent.destroy()
+            should_continue = False  # Signal to stop the game setup
+    else:
+        dialog.parent.destroy()
+        should_continue = False  # Signal to stop if the dialog was likely closed without a choice
+
+    return should_continue
+            
+
 
 def setup_ui(root, word, word_class): #add root as parameter
     """Sets up the UI with letter buttons."""
@@ -155,9 +197,23 @@ def setup_ui(root, word, word_class): #add root as parameter
 
 if __name__ == "__main__":
     root = HangmanGame()
-
-    settings_frame = FrameClass.CustomFrame(root, border_width=5, corner_radius=10, bg_color="white", width=WIDTH - 75, height=HEIGHT - 75)
-    frame_trigger = tk.Button(root, text="Settings", command=settings_frame.show_frame)
-    frame_trigger.place(x=WIDTH - 100, y=10) # Place the settings button
+    root.withdraw()
     
+    online_homemade_dialog = ExtraClasses.OnlineHomemadeDialog(root, callback=handle_secondary_window_result)
+    should_continue_game = online_homemade_dialog.wait_window()  # wait_window returns None when the window is destroyed
+
+    try:
+        if root.winfo_exists():
+            root.deiconify()
+            root.interface_setup()
+            settings_frame = ExtraClasses.CustomFrame(root, border_width=5, corner_radius=10, bg_color="white", width=WIDTH - 75, height=HEIGHT - 75)
+            frame_trigger = tk.Button(root, text="Settings", command=settings_frame.show_frame)
+            frame_trigger.place(x=WIDTH - 100, y=10) # Place the settings button
+            setup_settings_menu(settings_frame)
+            root.mainloop()
+    except tk.TclError:
+        # This error occurs if the root window was destroyed before the mainloop started
+        sys.exit() # Exit if the root window was already destroyed
+    
+    root.deiconify()  # Show the main window after setting up the game
     root.mainloop()
