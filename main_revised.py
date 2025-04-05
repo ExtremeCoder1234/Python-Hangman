@@ -16,7 +16,7 @@ WIDTH = 500
 HEIGHT = 500
 LETTERS_PER_LINE = 13
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-WORDS_FILE = "words.txt"
+WORDS_FILE = "C:\\Users\\jorda\\Projects\\Code\\Python\\Hangman\\words.txt"
 IMAGE_DIR = "C:\\Users\\jorda\\Projects\\Code\\Python\\Hangman\\assets\\Home-Made Pictures"
 ICON_PATH = "C:\\Users\\jorda\\Projects\\Code\\Python\\Hangman\\assets\\logo.ico"
 ASSETS_FOLDER = "C:\\Users\\jorda\\Projects\\Code\\Python\\Hangman\\assets"
@@ -75,7 +75,7 @@ class WordToGuess:
         self.guessed_word = [char if char == " " else "-" for char in word]
         self.wrong_guesses = 0
         self.word_label = tk.Label(root, text="".join(self.guessed_word), font=("Arial", 30), bg="white", wraplength=WIDTH - 20)
-        self.word_label.place(x=WIDTH / 2 - self.word_label.winfo_reqwidth() / 2, y=50)
+        self.word_label.place(x=(WIDTH / 2 - self.word_label.winfo_reqwidth()/ 2) + 40, y=50)
 
     def check_letter(self, letter):
         """Checks if the letter is in the word and updates the display."""
@@ -103,7 +103,7 @@ class WordToGuess:
 
     def game_over(self, win):
         """Handles game over logic."""
-        message = "Congrats, you win!" if win else "Sorry, you lost."
+        message = "Congrats, you win!" if win else f"Sorry, you lost. The word was '{self.word.lower().capitalize()}'."
         if easygui.ynbox(f"{message}\nPlay again?", "Game Over"):
             self.reset_game()
         else:
